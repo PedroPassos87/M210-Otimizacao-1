@@ -3,15 +3,13 @@ import numpy as np
 from scipy.optimize import linprog
 
 def simplex_solver(c, A_ub, b_ub, A_eq, b_eq, var_names, change_desired=None):
-    # Resolver o problema de PPL usando scipy.optimize.linprog
+
     result = linprog(c=-np.array(c), A_ub=A_ub, b_ub=b_ub, A_eq=A_eq, b_eq=b_eq, method="highs")
 
-    # Obter resultados
     optimal_point = result.x
     optimal_value = -result.fun
     shadow_prices = result.slack if A_ub else [0] * len(b_ub)
 
-    # Verificar alterações desejadas
     if change_desired:
         modified_b_ub = [b_ub[i] + change_desired[i] for i in range(len(b_ub))]
         modified_result = linprog(c=-np.array(c), A_ub=A_ub, b_ub=modified_b_ub, A_eq=A_eq, b_eq=b_eq, method="highs")
@@ -29,11 +27,11 @@ def simplex_solver(c, A_ub, b_ub, A_eq, b_eq, var_names, change_desired=None):
         "new_optimal_value": new_optimal_value,
     }
 
-# Interface Streamlit
+
 st.title("Solver de PPL com Simplex Tableau")
 st.markdown("**Resolva problemas de Programação Linear com até 4 variáveis.**")
 
-# Entradas do usuário
+
 st.header("Entradas do Problema")
 
 n_vars = st.selectbox("Número de variáveis (2, 3 ou 4):", [2, 3, 4])
